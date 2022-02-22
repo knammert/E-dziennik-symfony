@@ -4,14 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Subjects;
 use App\Form\SubjectFormType;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\SubjectsRepository;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\SubjectsRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 
 class SubjectsController extends AbstractController
 {
@@ -34,12 +35,12 @@ class SubjectsController extends AbstractController
         $subject = new Subjects();
         $form = $this->createForm(SubjectFormType::class, $subject);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()){ 
-            $newSubject = $form->getData();
-            $this->em->persist($newSubject);
-            $this->em->flush();
-            return $this->redirectToRoute('subjects');
-        }
+            if($form->isSubmitted() && $form->isValid()){ 
+                $newSubject = $form->getData();
+                $this->em->persist($newSubject);
+                $this->em->flush();
+                return $this->redirectToRoute('subjects');
+            }
         // Create new subject END
        
         return $this->render('adminPanel/subjects/index.html.twig',[
