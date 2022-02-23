@@ -13,7 +13,7 @@ class ClassNameSubjects
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    public $id;
 
     #[ORM\ManyToOne(targetEntity: ClassNames::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -30,9 +30,13 @@ class ClassNameSubjects
     #[ORM\OneToMany(mappedBy: 'class_name_subject', targetEntity: Schedules::class, orphanRemoval: true)]
     private $schedules;
 
+    #[ORM\OneToMany(mappedBy: 'class_name_subject', targetEntity: Grades::class, orphanRemoval: true)]
+    private $grades;
+
     public function __construct()
     {
         $this->schedules = new ArrayCollection();
+        $this->grades = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -100,6 +104,36 @@ class ClassNameSubjects
             // set the owning side to null (unless already changed)
             if ($schedule->getClassNameSubject() === $this) {
                 $schedule->setClassNameSubject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Grades>
+     */
+    public function getGrades(): Collection
+    {
+        return $this->grades;
+    }
+
+    public function addGrade(Grades $grade): self
+    {
+        if (!$this->grades->contains($grade)) {
+            $this->grades[] = $grade;
+            $grade->setClassNameSubject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrade(Grades $grade): self
+    {
+        if ($this->grades->removeElement($grade)) {
+            // set the owning side to null (unless already changed)
+            if ($grade->getClassNameSubject() === $this) {
+                $grade->setClassNameSubject(null);
             }
         }
 

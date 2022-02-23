@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.11",
+        "fzaninotto/faker": "^1.5",
         "knplabs/knp-paginator-bundle": "^5.8",
         "laminas/laminas-code": "4.5.0@dev",
         "sensio/framework-extra-bundle": "^6.2",
@@ -22,6 +23,7 @@
         "symfony/proxy-manager-bridge": "6.0.*",
         "symfony/runtime": "6.0.*",
         "symfony/security-bundle": "6.0.*",
+        "symfony/security-csrf": "6.0.*",
         "symfony/twig-bundle": "6.0.*",
         "symfony/validator": "6.0.*",
         "symfony/webpack-encore-bundle": "^1.14",
@@ -79,5 +81,8 @@
             "allow-contrib": false,
             "require": "6.0.*"
         }
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4"
     }
 }

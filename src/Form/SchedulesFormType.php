@@ -16,8 +16,7 @@ class SchedulesFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('weekday', ChoiceType::class,[
-           
+        ->add('weekday', ChoiceType::class,[     
             'label' => 'Dzień tygodnia:',
             'attr' => [                
             'class' => 'form-control',                               

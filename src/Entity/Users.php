@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -15,7 +17,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    public $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
@@ -30,10 +32,21 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $surname;
+    public $surname;
 
     #[ORM\Column(type: 'integer')]
     private $pesel;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Grades::class)]
+    private $grades;
+
+    #[ORM\ManyToOne(targetEntity: ClassNames::class, inversedBy: 'users')]
+    private $class_name;
+
+    public function __construct()
+    {
+        $this->grades = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -137,6 +150,48 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPesel(int $pesel): self
     {
         $this->pesel = $pesel;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Grades>
+     */
+    public function getGrades(): Collection
+    {
+        return $this->grades;
+    }
+
+    public function addGrade(Grades $grade): self
+    {
+        if (!$this->grades->contains($grade)) {
+            $this->grades[] = $grade;
+            $grade->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrade(Grades $grade): self
+    {
+        if ($this->grades->removeElement($grade)) {
+            // set the owning side to null (unless already changed)
+            if ($grade->getUser() === $this) {
+                $grade->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getClassName(): ?ClassNames
+    {
+        return $this->class_name;
+    }
+
+    public function setClassName(?ClassNames $class_name): self
+    {
+        $this->class_name = $class_name;
 
         return $this;
     }

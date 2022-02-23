@@ -35,7 +35,7 @@ class ClassNameSubjectController extends AbstractController
         $activity = new ClassNameSubjects();
         $form = $this->createForm(ClassNameSubjectsFormType::class, $activity);
         $form->handleRequest($request);
-            if($form->isSubmitted() && $form->isValid()){ 
+            if($form->isSubmitted() && $form->isValid()){                 
                 $newActivity = $form->getData();
                 $this->em->persist($newActivity);
                 $this->em->flush();

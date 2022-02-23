@@ -26,7 +26,7 @@ class SubjectsController extends AbstractController
     #[Route('/adminPanel/subjects/index', name: 'subjects')]
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
-        
+    //Default version to retrive data but this is not good with pagination  
         // $repository = $this->em->getRepository(Subjects::class);
         // $subjects = $repository->findAll();
         $repository = $this->em->getRepository(Subjects::class);
