@@ -30,7 +30,7 @@ class ClassNamesController extends AbstractController
         // $subjects = $repository->findAll();
         $repository = $this->em->getRepository(ClassNames::class);
 
-        // Create new subject
+        // Create new class
         $className = new ClassNames();
         $form = $this->createForm(ClassNamesType::class, $className);
         $form->handleRequest($request);
@@ -40,7 +40,7 @@ class ClassNamesController extends AbstractController
                 $this->em->flush();
                 return $this->redirectToRoute('classNames');
             }
-        // Create new subject END
+        // Create new class END
        
         return $this->render('adminPanel/class_names/index.html.twig',[
             'classNames' => $paginator->paginate(

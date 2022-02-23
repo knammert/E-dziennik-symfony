@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClassNameSubjectsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClassNameSubjectsRepository::class)]
@@ -24,6 +26,14 @@ class ClassNameSubjects
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
+
+    #[ORM\OneToMany(mappedBy: 'class_name_subject', targetEntity: Schedules::class, orphanRemoval: true)]
+    private $schedules;
+
+    public function __construct()
+    {
+        $this->schedules = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -62,6 +72,36 @@ class ClassNameSubjects
     public function setUser(?Users $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Schedules>
+     */
+    public function getSchedules(): Collection
+    {
+        return $this->schedules;
+    }
+
+    public function addSchedule(Schedules $schedule): self
+    {
+        if (!$this->schedules->contains($schedule)) {
+            $this->schedules[] = $schedule;
+            $schedule->setClassNameSubject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSchedule(Schedules $schedule): self
+    {
+        if ($this->schedules->removeElement($schedule)) {
+            // set the owning side to null (unless already changed)
+            if ($schedule->getClassNameSubject() === $this) {
+                $schedule->setClassNameSubject(null);
+            }
+        }
 
         return $this;
     }

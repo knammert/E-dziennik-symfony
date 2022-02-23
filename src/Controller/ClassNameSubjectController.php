@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\ClassNameSubjects;
+use App\Entity\Schedules;
 use App\Form\ClassNameSubjectsFormType;
+use App\Form\SchedulesFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +31,7 @@ class ClassNameSubjectController extends AbstractController
         // $subjects = $repository->findAll();
         $repository = $this->em->getRepository(ClassNameSubjects::class);
 
-        // Create new subject
+        // Create new activity
         $activity = new ClassNameSubjects();
         $form = $this->createForm(ClassNameSubjectsFormType::class, $activity);
         $form->handleRequest($request);
@@ -39,12 +41,25 @@ class ClassNameSubjectController extends AbstractController
                 $this->em->flush();
                 return $this->redirectToRoute('activities');
             }
-        // Create new subject END
+        // Create new activity END
+
+         // Create new schedule
+         $schedule = new Schedules();
+         $formSchedule = $this->createForm(SchedulesFormType::class, $schedule);
+         $formSchedule->handleRequest($request);
+             if($formSchedule->isSubmitted() && $formSchedule->isValid()){ 
+                 $newSchedule = $formSchedule->getData();
+                 $this->em->persist($newSchedule);
+                 $this->em->flush();
+                 return $this->redirectToRoute('activities');
+             }
+         // Create new schedule END
        
         return $this->render('/adminPanel/activities/index.html.twig',[
             'class_name_subjects' => $paginator->paginate(
                 $repository->findAll(),$request->query->getInt('page', 1),10),
-             'form'=>$form->createView()
+             'form'=>$form->createView(),
+             'formSchedule'=>$formSchedule->createView()
         ]);
     }
 }
