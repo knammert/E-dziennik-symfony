@@ -44,7 +44,8 @@ class ClassNamesController extends AbstractController
        
         return $this->render('adminPanel/class_names/index.html.twig',[
             'classNames' => $paginator->paginate(
-                $repository->findAll(),$request->query->getInt('page', 1),10),
+            $repository->findAll(),
+            $request->query->getInt('page', 1),10),
             'form'=>$form->createView()
         ]);
     }

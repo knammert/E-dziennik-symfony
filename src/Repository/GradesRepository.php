@@ -19,6 +19,12 @@ class GradesRepository extends ServiceEntityRepository
         parent::__construct($registry, Grades::class);
     }
 
+    public function findAverageGrade()
+    {
+ 
+        
+    }
+
     // /**
     //  * @return Grades[] Returns an array of Grades objects
     //  */

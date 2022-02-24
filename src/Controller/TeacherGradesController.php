@@ -6,51 +6,66 @@ use App\Entity\Grades;
 use App\Form\AddGradesFormType;
 use App\Entity\ClassNameSubjects;
 use App\Repository\UsersRepository;
+use App\Repository\GradesRepository;
 use App\Form\FilterActivitiesFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use App\Repository\ClassNameSubjectsRepository;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TeacherGradesController extends AbstractController
 {
 
-    public function __construct(ClassNameSubjectsRepository $classNameSubjectsRepository, EntityManagerInterface $em, UsersRepository $usersRepository){
+    public function __construct(GradesRepository $gradesRepository, ClassNameSubjectsRepository $classNameSubjectsRepository, EntityManagerInterface $em, UsersRepository $usersRepository, Security $security){
+        $this->gradesRepository = $gradesRepository;
         $this->classNameSubjectsRepository = $classNameSubjectsRepository;
         $this->usersRepository = $usersRepository;
+        $this->security = $security;
         $this->em = $em;     
     }
 
     #[Route('/teacherPanel/index/', name: 'teacher_grades')]
-    public function index(Request $request): Response
+    public function index(PaginatorInterface $paginator, Request $request): Response
     {
-
-        $users = $this->usersRepository->findBy([
-            'class_name' => 73,
-        ]);
-
-       // $users = $this->usersRepository->filterByClass();
+        ob_start();
+    
 
 
-        // Create filter form
-      
+        // Create filter form      
         $formFilter = $this->createForm(FilterActivitiesFormType::class);
         $formFilter->handleRequest($request);
             if($formFilter->isSubmitted() && $formFilter->isValid()){              
-                $filterResult=$formFilter->getData();
-                
-                $classNameSubjects = $this->classNameSubjectsRepository->find($filterResult->id);
-                $classId = $classNameSubjects->getClassName()->getId();
+                $filterResult=$formFilter->getData();     
+                $classNameSubject = $this->classNameSubjectsRepository->find($filterResult->id);
+                $classId = $classNameSubject->getClassName()->getId();
 
                 $users = $this->usersRepository->findBy([
                     'class_name' => $classId,
-                ]);
-       
+                    
+                ],array('surname' => 'ASC'));  
             }
-        // Create filter form END
+            else{
+                $classNameSubject = $this->classNameSubjectsRepository->findOneBy([
+                    'user' => $this->security->getUser()->getId()
+                ]);
+                $classId = $classNameSubject->getClassName()->getId();
+
+                $users = $this->usersRepository->findBy([
+                    'class_name' => $classNameSubject->getClassName(),
+                     
+                ],array('surname' => 'ASC'));                
+            }        
+        // End filter form
+
+        //Get avg
+        $userAvgGrade = $this->usersRepository->findUsersAvg($classId, $classNameSubject->getId());
 
         // Create new activity
         $grade = new Grades();
@@ -60,18 +75,38 @@ class TeacherGradesController extends AbstractController
                 $newGrade = $form->getData();
                 $this->em->persist($newGrade);
                 $this->em->flush();
-                return $this->redirectToRoute('teacher_grades');
+                return $this->redirect($request->headers->get('referer'));
             }
-        // Create new activity END
-
-
+        //END new activity
         return $this->render('teacherPanel/index.html.twig', [
-            'users'=> $users,
+            'activity' => $classNameSubject->getId(),
             'formFilter'=>$formFilter->createView(),
             'controller_name' => 'TeacherGradesController',
             'form'=>$form->createView(),
+            'users' => $paginator->paginate(
+                $users,
+                $request->query->getInt('page', 1),10),
+            'userAvgGrade' => $paginator->paginate(
+                $userAvgGrade,
+                $request->query->getInt('page', 1),10),
         ]);
     }
+    
+    #[Route('/teacherPanel/index/update/{gradeId}',methods:['POST','GET','PUT'], name: 'updateGrade')]
+    public function update($gradeId,Request $request){
+
+      
+         $grade = $this->gradesRepository->find($gradeId);
+         $grade->setGrade($request->get('grade'));
+         $grade->setWeight($request->get('weight'));
+         $grade->setSemestr($request->get('semestr'));
+         $grade->setComment($request->get('comment'));
+         $this->em->flush();
+        
+         return $this->redirect($request->headers->get('referer'));
+
+    }
+
 
     #[Route('/changeStudentList/{id}',methods:['GET','POST'], name: 'changeStudentList')]
     public function changeStudentList($id){

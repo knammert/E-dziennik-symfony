@@ -36,6 +36,25 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
         $this->_em->flush();
     }
 
+    public function findUsersAvg($classId,$ClassNameSubjectId)
+    {
+        //dd($classId,$ClassNameSubjectId);
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+        SELECT u.name, IFNULL(SUM(g.grade * g.weight) / SUM(g.weight), NULL) as avg
+        FROM users u
+                 LEFT JOIN grades g on u.id = g.user_id AND g.class_name_subject_id = :ClassNameSubjectId
+        WHERE u.class_name_id = :classId
+        GROUP BY u.surname
+            ';
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery(array('classId' => $classId,'ClassNameSubjectId' => $ClassNameSubjectId));
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchAllAssociative();
+    }
+
+
     // /**
     //  * @return Users[] Returns an array of Users objects
     //  */

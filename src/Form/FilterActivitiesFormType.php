@@ -21,8 +21,9 @@ class FilterActivitiesFormType extends AbstractType
     {
         
         $builder
+            ->setMethod('GET')
             ->add('id', EntityType::class,[
-                'class' => ClassNameSubjects::class,
+                'class' => ClassNameSubjects::class ,
                 'query_builder' => function (EntityRepository $er ) {                  
                     $user = $this->security->getUser()->getId();               
                     return $er->createQueryBuilder('u')
@@ -33,7 +34,7 @@ class FilterActivitiesFormType extends AbstractType
                 },
                 'label' => false,
                 'attr' => [       
-                'class' => 'custom-select mr-sm-2  ',                                 
+                'class' => 'form-control mb-0',                                 
                     ]
                 ]);
     }
