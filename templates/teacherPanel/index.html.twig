@@ -5,15 +5,15 @@
 
         <div class="row">
             <div class="col-lg-12 ">
-                <div class="float-left">
+                <div class="float-left ">
                     <h2>Oceny</h2>
                     <h5>
-                        {# Klasa: {{$activity->class_name->name}}
-                        Przedmiot: {{$activity->subject->name}} #}
+                        Klasa: {{activity.className.name}}
+                        Przedmiot: {{activity.subject.name}} 
 
                     </h5>
                 </div>
-                <div class="float-right row  mr-2">
+                <div class="float-right row mr-2 mt-4">
                     <!-- Wyszukiwarka użytkowników -->
                      {# <form class="form-inline" action="{{ path('teacher_grades', 'route_parameters = ['XD'=>xd]', relative = false) }}"> #}
                       {{ form_start(formFilter) }} 
@@ -70,7 +70,7 @@
                 <td>
                      {% for obj in user.grades %}
 
-                         {% if (obj.ClassNameSubject.id==activity) %} 
+                         {% if (obj.ClassNameSubject.id==activity.id) %} 
                             <span data-html="true"
                             data-toggle="tooltip"
                             data-placement="top"
@@ -84,16 +84,6 @@
                                 {% if (loop.last!=true) %}                              
                                     ,
                                 {% endif %} 
-                                {# @php
-                                    $grade = $obj.grade;
-                                    $order = array(".5", "1.75", "2.75", "3.75", "4.75", "5.75");
-                                    $replace = array("+", "2-", "3-", "4-", "5-", "6-" );
-                                    $newGrade = str_replace($order, $replace, $grade);
-                                @endphp
-                                   {{$newGrade}}
-                                    @if( !$loop->last)
-                                    ,
-                                    {% endif %} #}
                                  </a> 
                             </span>
                          {% endif %} 
@@ -233,7 +223,7 @@
  {# {{-- Modal edit grade --}} #}
 {% for user in users %}
     {% for obj in user.grades %}
-        {% if (obj.ClassNameSubject.id==activity) %} 
+        {% if (obj.ClassNameSubject.id==activity.id) %} 
             <div class="modal fade" id="editGradeModal-{{obj.id}}" tabindex="-1" role="dialog" aria-labelledby="editGradeModal" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -245,11 +235,12 @@
                             </div>
                             <div class="modal-body">
                                 <div class="modal-body">
-                                      <form action="{{ path('updateGrade', { 'gradeId' : obj.id }) }}" method="POST">                                                                     
+                                      <form action="{{ path('teacher_grades_update', { 'gradeId' : obj.id }) }}" method="POST">                                                                     
                                             <p>Imię: {{user.name}}</p>
                                             <p>Nazwisko: {{user.surname}}</p>
-                                            <p>Data dodania: {{obj.createdAt}}</p>
-                                            <p>Ostatnio modyfikowana: {{obj.updatedAt}}</p>
+                                             <p>Data dodania: {{ obj.createdAt | date("d/m/Y H:i") }}</p>
+                                             
+                                            <p>Ostatnio modyfikowana: {{ obj.updatedAt | date("d/m/Y H:i") }}</p> 
                                         <div class="form-group">
                                             <strong>Ocena:</strong>
                                              <select type="text" name="grade" id="grade" class="form-control">
@@ -339,6 +330,9 @@
     $(document).ready(function() {
         $('#add_grades_form_user').empty();
         document.getElementById('add_grades_form_user').disabled = true;
+        
+
+        
         $('#add_grades_form_class_name_subject').on('change', function() {
             document.getElementById('add_grades_form_user').disabled = false;
             var activity_id = $(this).val();
@@ -367,6 +361,10 @@
             document.getElementById('user').disabled = true;
             }
         });
+
+                const e = new Event("change");
+        const element = document.querySelector('#add_grades_form_class_name_subject')
+        element.dispatchEvent(e);
     });
 
     {# $(function () {

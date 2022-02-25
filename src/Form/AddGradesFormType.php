@@ -6,16 +6,17 @@ use App\Entity\Users;
 use App\Entity\Grades;
 use App\Entity\ClassNameSubjects;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
 class AddGradesFormType extends AbstractType
 {
@@ -82,7 +83,7 @@ class AddGradesFormType extends AbstractType
                     'class' => 'form-control ',               
                 ],
             ])
-            ->add('comment')
+            
             // ->add('created_at')
             // ->add('updated_at')
             ->add('semestr', ChoiceType::class,[     
@@ -114,11 +115,11 @@ class AddGradesFormType extends AbstractType
                     'class' => Users::class,
                     'choice_label' => function (Users $user) {
                         return $user->getName() . ' ' . $user->getSurname();
-                    },
-                    'label' => 'Nauczyciel:',
+                    },                 
+                    'label' => 'Uczeń:',
                     'attr' => [                
-                    'class' => 'form-control ',                                 
-                    ]
+                    'class' => 'form-control ',                                               
+                        ]                       
                     ]);
             ;
 

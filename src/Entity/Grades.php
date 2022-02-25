@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\GradesRepository;
+use DateTime;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\GradesRepository;
 
 #[ORM\Entity(repositoryClass: GradesRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Grades
 {
     #[ORM\Id]
@@ -30,14 +33,19 @@ class Grades
     #[ORM\Column(type: 'string', length: 255)]
     private $comment;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $created_at;
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'datetime')]
+    public $created_at;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private $updated_at;
+    
+    #[ORM\Column(type: 'datetime')]
+    #[Gedmo\Timestampable(on: 'update')]
+    public $updated_at;
 
     #[ORM\Column(type: 'integer')]
     private $semestr;
+
+
 
     public function getId(): ?int
     {
@@ -104,29 +112,29 @@ class Grades
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
-    {
-        $this->created_at = $created_at;
+    // public function setCreatedAt(\DateTime $created_at): self
+    // {
+    //     $this->created_at = $created_at;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
-    {
-        $this->updated_at = $updated_at;
+    // public function setUpdatedAt(\DateTime $updated_at): self
+    // {
+    //     $this->updated_at = $updated_at;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getSemestr(): ?int
     {

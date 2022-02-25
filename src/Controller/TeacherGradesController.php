@@ -35,9 +35,6 @@ class TeacherGradesController extends AbstractController
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
         ob_start();
-    
-
-
         // Create filter form      
         $formFilter = $this->createForm(FilterActivitiesFormType::class);
         $formFilter->handleRequest($request);
@@ -66,8 +63,9 @@ class TeacherGradesController extends AbstractController
 
         //Get avg
         $userAvgGrade = $this->usersRepository->findUsersAvg($classId, $classNameSubject->getId());
+        //END avg
 
-        // Create new activity
+        // Create new grade
         $grade = new Grades();
         $form = $this->createForm(AddGradesFormType::class, $grade);
         $form->handleRequest($request);
@@ -77,9 +75,9 @@ class TeacherGradesController extends AbstractController
                 $this->em->flush();
                 return $this->redirect($request->headers->get('referer'));
             }
-        //END new activity
+        //END new grade
         return $this->render('teacherPanel/index.html.twig', [
-            'activity' => $classNameSubject->getId(),
+            'activity' => $classNameSubject,
             'formFilter'=>$formFilter->createView(),
             'controller_name' => 'TeacherGradesController',
             'form'=>$form->createView(),
@@ -92,10 +90,8 @@ class TeacherGradesController extends AbstractController
         ]);
     }
     
-    #[Route('/teacherPanel/index/update/{gradeId}',methods:['POST','GET','PUT'], name: 'updateGrade')]
-    public function update($gradeId,Request $request){
-
-      
+    #[Route('/teacherPanel/index/update/{gradeId}',methods:['POST','GET','PUT'], name: 'teacher_grades_update')]
+    public function update($gradeId,Request $request){     
          $grade = $this->gradesRepository->find($gradeId);
          $grade->setGrade($request->get('grade'));
          $grade->setWeight($request->get('weight'));
@@ -117,7 +113,7 @@ class TeacherGradesController extends AbstractController
 
          $data = $this->usersRepository->findBy([
             'class_name' => $classId,
-        ]);
+        ],array('surname' => 'ASC'));
       
         return new JsonResponse($data);
     }

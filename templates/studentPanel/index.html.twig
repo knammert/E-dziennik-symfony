@@ -1,0 +1,114 @@
+{% extends("base.html.twig") %}
+
+{% block content%}
+
+        <div class="row">
+            <div class="col-lg-12 margin-tb">
+                <div class="float-left">
+                    <h2>Moje oceny</h2>
+                    {# <h5>{{Auth::user()->name}} {{Auth::user()->surname}}</h5> #}
+                </div>
+            </div>
+        </div>
+
+
+        <table  class="table table-bordered shadow-lg p-3 mb-5 bg-white rounded">
+            <tr>
+                <th>Przedmiot</th>
+                <th>Nauczyciel</th>
+                <th>Oceny cząstkowe</th>
+                <th>Średnia</th>
+                <th>Przewidywana ocena śródroczna</th>
+            </tr>
+            {% for classNameSubject in classNameSubjects %}           
+            <tr>
+                <td>{{ classNameSubject.subject.name }}</td>
+                <td>{{ classNameSubject.user.name }} {{ classNameSubject.user.surname }}</td>
+                <td>
+                    
+                     {% for obj in classNameSubject.grades %}
+                         {% if (obj.classNameSubject.id==classNameSubject.id and  obj.user.id ==  app.user.id) %} 
+                            <span data-html="true"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            data-toggle="modal"
+                            title="Waga: {{ obj.weight }} | Komentarz: {{ obj.comment }} | Semestr: {{ obj.semestr }} ">
+                                <a
+                                type="button"
+                                data-toggle="modal"
+                                data-target="#showGradeModal-{{obj.id}}">
+                                {{obj.grade|replace({'.5': "+",'1.75': "2-",'2.75': "3-",'3.75': "4-",'4.75': "5-",'5.75': "6-",})}} 
+                                {% if (loop.last!=true) %}                              
+                                    ,
+                                {% endif %} 
+                                </a>
+                            </span>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                     {{ userAvgGrade[loop.index0].avg|round(2, 'ceil') }}  
+                </td>
+                <td>
+                    {% if (userAvgGrade[loop.index0].avg ==null) %}
+                        Brak ocen                   
+                   {% elseif (userAvgGrade[loop.index0].avg<1.75) %}
+                        Niedostateczny                   
+                   {% elseif (userAvgGrade[loop.index0].avg<2.75) %}
+                        Dopuszczający                    
+                    {% elseif (userAvgGrade[loop.index0].avg<3.75) %}
+                        Dostateczny                    
+                    {% elseif (userAvgGrade[loop.index0].avg<4.75) %}
+                        Dobry                     
+                    {% elseif (userAvgGrade[loop.index0].avg<5.75) %}
+                        Bardzo dobry                   
+                   {% else %}
+                        Celujący                  
+                    {% endif %}     
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(classNameSubjects) }} 
+        </div>
+{# {{-- Modal --}} #}
+{% for classNameSubject in classNameSubjects %}   
+    {% for obj in classNameSubject.grades %}
+        {% if (obj.classNameSubject.id==classNameSubject.id and obj.user.id ==  app.user.id) %} 
+                <div class="modal fade" id="showGradeModal-{{obj.id}}" tabindex="-1" role="dialog" aria-labelledby="showGradeModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="showGradeModal">Szczegóły oceny</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="modal-body">                                       
+                                     <p>Przedmiot: {{classNameSubject.subject.name}}</p>
+                                     <p>Ocena: {{obj.grade|replace({'.5': "+",'1.75': "2-",'2.75': "3-",'3.75': "4-",'4.75': "5-",'5.75': "6-",})}} </p>
+                                     <p>Waga: {{obj.weight}}</p>
+                                     <p>Semestr: {{obj.semestr}}</p>
+                                     <p>Komentarz: {{obj.comment}}</p>
+                                     <p>Wystawione przez: {{classNameSubject.user.name}} {{classNameSubject.user.surname}}</p>
+                                     <p>Data dodania: {{obj.createdAt}}</p>
+                                     <p>Ostatnio modyfikowana: {{obj.updatedAt}}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                                   </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+             {% endif %}
+        {% endfor %}
+    {% endfor %}
+<script>
+                  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+
+{% endblock %}
