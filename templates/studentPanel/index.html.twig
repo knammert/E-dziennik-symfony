@@ -92,8 +92,8 @@
                                      <p>Semestr: {{obj.semestr}}</p>
                                      <p>Komentarz: {{obj.comment}}</p>
                                      <p>Wystawione przez: {{classNameSubject.user.name}} {{classNameSubject.user.surname}}</p>
-                                     <p>Data dodania: {{obj.createdAt}}</p>
-                                     <p>Ostatnio modyfikowana: {{obj.updatedAt}}</p>
+                                     <p>Data dodania: {{ obj.createdAt | date("d/m/Y H:i") }}</p>                                   
+                                    <p>Ostatnio modyfikowana: {{ obj.updatedAt | date("d/m/Y H:i") }}</p> 
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>

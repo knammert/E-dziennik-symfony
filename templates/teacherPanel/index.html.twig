@@ -238,8 +238,7 @@
                                       <form action="{{ path('teacher_grades_update', { 'gradeId' : obj.id }) }}" method="POST">                                                                     
                                             <p>Imię: {{user.name}}</p>
                                             <p>Nazwisko: {{user.surname}}</p>
-                                             <p>Data dodania: {{ obj.createdAt | date("d/m/Y H:i") }}</p>
-                                             
+                                             <p>Data dodania: {{ obj.createdAt | date("d/m/Y H:i") }}</p>                                   
                                             <p>Ostatnio modyfikowana: {{ obj.updatedAt | date("d/m/Y H:i") }}</p> 
                                         <div class="form-group">
                                             <strong>Ocena:</strong>
@@ -314,19 +313,6 @@
 
 <!-- Skrypt wczytywania studentów-->
 <script>
-
-    {# const queryString = window.location.search;
-     const urlParams = new URLSearchParams(queryString);
-    if(urlParams.get('type')){
-        const type = urlParams.get('type');
-        document.getElementById('type').value = type;
-    } 
-
-     $.ajaxSetup({
-        headers: {
-           
-        }
-    }); #}
     $(document).ready(function() {
         $('#add_grades_form_user').empty();
         document.getElementById('add_grades_form_user').disabled = true;
