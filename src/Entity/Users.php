@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -24,7 +25,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
-
+    
+    /**
+     * @SecurityAssert\UserPassword(
+     *     message = "Podane hasło nie zgadza sie z ustalonym hasłem"
+     * )
+     */
     #[ORM\Column(type: 'string')]
     private $password;
 
@@ -42,6 +48,18 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(targetEntity: ClassNames::class, inversedBy: 'users')]
     private $class_name;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $created_at;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $updated_at;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    public $avatar;
+
+    
+  
 
     public function __construct()
     {
@@ -93,6 +111,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    
+
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -194,5 +215,70 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->class_name = $class_name;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    
+    public function getAbsolutePath()
+    {
+        return null === $this->avatar
+            ? null
+            : $this->getUploadRootDir().'/'.$this->avatar;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->avatar
+            ? null
+            : $this->getUploadDir().'/'.$this->avatar;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'uploads/documents';
     }
 }

@@ -31,11 +31,12 @@
         </a>
         <div id="collapseUtilities2" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
-            {# {{-- <div class="bg-white py-2 collapse-inner rounded"> --}} #}
-                {# <a class="collapse-item" href="{{ route('me.index') }}">Mój profil</a> #}
-                {# <a class="collapse-item" href="{{route('me.edit',Auth::user()->id)}}">Edycja danych</a> #}
-                {# <a class="collapse-item" href="{{ route('changePasswordIndex') }}">Zmiana hasła</a> #}
+           <div class="bg-white py-2 collapse-inner rounded"> 
+                <a class="collapse-item" href="{{ path('me') }}">Mój profil</a>
+                <a class="collapse-item" href="{{ path('me_edit') }}">Edycja danych</a>
+                <a class="collapse-item" href="{{ path('me_change_password') }}">Zmiana hasła</a>
                 {# <a class="collapse-item" href="{{ route('deleteAccountIndex') }}">Usuwanie konta</a> #}
+            </div>
         </div>
     </li>
 
