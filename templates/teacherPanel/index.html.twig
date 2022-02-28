@@ -15,22 +15,16 @@
                 </div>
                 <div class="float-right row mr-2 mt-4">
                     <!-- Wyszukiwarka użytkowników -->
-                     {# <form class="form-inline" action="{{ path('teacher_grades', 'route_parameters = ['XD'=>xd]', relative = false) }}"> #}
                       {{ form_start(formFilter) }} 
                         <div class="form-row "> 
                             <div class="col-auto">
-                                {# <select class='custom-select mr-sm-2' name="type" id="type"> #}
-                                    {# @foreach ($activities as $activitie)
-                                        <option value="{{$activitie->id}}"> Klasa: {{$activitie->class_name->name}} -- Przedmiot: {{$activitie->subject->name}}</option>
-                                    @endforeach #}
-                                {# </select> #}
                                 {{ form_row(formFilter.id) }}
                             </div>
                             <div class="col-auto">
-                            <button class="btn btn-primary mb-3" type="sumbit">Wyszukaj</button>
+                                <button class="btn btn-primary mb-3" type="sumbit">Wyszukaj</button>
                             </div>
                         </div>
-                    {# </form>  #} {{ form_end(formFilter) }} 
+                     {{ form_end(formFilter) }} 
 
                         <div class="form-row ml-2">
                             <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#exampleModal">

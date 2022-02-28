@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\FilterUsersFormType;
 use App\Repository\ClassNamesRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,19 +20,43 @@ class UsersController extends AbstractController
     }
 
     #[Route('/adminPanel/users/index', name: 'users')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        //Getting all users and classes for edit 
 
-        $users = $this->usersRepository->findAll();
+        $users  = $this->usersRepository->findBy(array(), array('surname' => 'ASC'));
         $classes = $this->classNamesRepository->findAll();
 
+
+
+        $formFilter = $this->createForm(FilterUsersFormType::class);
+        $formFilter->handleRequest($request);
+            if($formFilter->isSubmitted() && $formFilter->isValid()){                
+                $filterResult = $formFilter->getData();  
+              // dd($filterResult);   
+                $qb = $this->usersRepository->createQueryBuilder('u')
+                ->orderBy('u.surname', 'ASC');
+
+                 if($filterResult['phrase'] !=null){
+                    $qb -> where('u.surname LIKE :phrase')
+                    ->setParameter('phrase', '%'.$filterResult['phrase'].'%');
+                 }
+                 if($filterResult['roles'] !=null){
+                    $qb -> where('u.roles LIKE :roles')
+                    ->setParameter('roles', '%'.$filterResult['roles'].'%');
+                 }
+      
+                $query = $qb->getQuery();
+                $users = $query->execute();                               
+            }
         return $this->render('/adminPanel/users/index.html.twig', [
             'users' => $users,
             'classes' => $classes,
+            'formFilter'=>$formFilter->createView(),
         ]);
     }
 
-    #[Route('/adminPanel/index/update/{userId}',methods:['POST','GET','PUT'], name: 'user_update')]
+    #[Route('/adminPanel/users/index/update/{userId}',methods:['POST','GET','PUT'], name: 'user_update')]
     public function update($userId, Request $request){      
 
          $user = $this->usersRepository->find($userId);
@@ -41,6 +66,17 @@ class UsersController extends AbstractController
          $this->em->flush();
         
          return $this->redirect($request->headers->get('referer'));
+    }
+
+    #[Route('/adminPanel/users/index/delete/{id}',methods:['GET','DETLE'], name: 'user_delete')]
+    public function delete($id): Response
+    {
+            
+        $user = $this->usersRepository->find($id);
+        $this->em->remove($user);
+        $this->em->flush();
+
+        return $this->redirectToRoute('users');
     }
 
 
