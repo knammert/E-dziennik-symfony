@@ -54,18 +54,18 @@
                     <td>{{ user.email }}</td>
                     <td>
 
-                    {% if not (user.roles[1] is defined) %}
-                          Brak roli     
-                   {% elseif (user.roles==1) %}
-                        Uczeń                  
-                   {% elseif (user.roles==2) %}
-                        Nauczyciel                  
-                    {% elseif (user.roles==3) %}
-                        Administrator                                    
+                    {% if 'ROLE_STUDENT' in user.roles %}
+                        Uczeń     
+                   {% elseif 'ROLE_TEACHER' in user.roles %}
+                        Nauczyciel                
+                   {% elseif 'ROLE_ADMIN' in user.roles %}
+                        Administrator systemu                
+                    {% else %}
+                        Brak roli                               
                     {% endif %}  
                     </td>
                     <td>
-                    {% if user.className.name != null %}
+                    {% if user.className != null %}
                         {{user.className.name}}
                     {% else %}
                         Brak przypisanej
@@ -73,13 +73,14 @@
 
                     </td>
                     <td class="row">
-                        {# <a
+                    
+                        <a
                         type="submit"
                         class="btn btn-warning mr-1 editModal"
                         data-toggle="modal"
-                        data-target="#editUserModal-{{$user->id}}">
+                        data-target="#editUserModal-{{user.id}}">
                         Edytuj
-                    </a> #}
+                        </a>
                         {# <form action="{{ route('adminPanel.subjects.index',$user->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
@@ -95,8 +96,8 @@
             {!! $users->links() !!}
         </div>
         {# {{-- Modal --}} #}
-        {# @foreach ($users as $user)
-        <div class="modal fade" id="editUserModal-{{$user->id}}" tabindex="-1" role="dialog" aria-labelledby="editUserModal" aria-hidden="true">
+        {% for user in users %}
+        <div class="modal fade" id="editUserModal-{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="editUserModal" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -106,40 +107,31 @@
                         </button>
                     </div>
                             <div class="modal-body">
-                                <p>Imię: {{$user->name}}</p>
-                                <p>Nazwisko: {{$user->surname}}</p>
-                                <p>Email: {{$user->email}}</p>
-                                <p>PESEL: {{$user->pesel}}</p>
-                                <p>Data rejestracji: {{$user->created_at}}</p>
-                                <p>Ostatnio modyfikowany: {{$user->updated_at}}</p>
-
-                                <form action="{{ route('users.update',$user->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
+                                <p>Imię: {{user.name}}</p>
+                                <p>Nazwisko: {{user.surname}}</p>
+                                <p>Email: {{user.email}}</p>
+                                <p>PESEL: {{user.pesel}}</p>
+                                {# <p>Data rejestracji: {{user.created_at}}</p>
+                                <p>Ostatnio modyfikowany: {{user.updated_at}}</p> #}
+                                <form action="{{ path('user_update', { 'userId' : user.id }) }}" method="POST">
                                 <div class="form-group">
                                     <strong>Rola:</strong>
+                            
                                     <select type="text" name="role" id="role" class="form-control role">
-                                        <option @if ($user->role =='0') selected @endif value="0">Brak roli</option>
-                                        <option @if ($user->role =='1') selected @endif value="1">Uczeń</option>
-                                        <option @if ($user->role =='2') selected @endif value="2">Nauczyciel</option>
-                                        <option @if ($user->role =='3') selected @endif value="3">Administrator</option>
-                                        @error('role')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        <option value="0">Brak roli</option>
+                                        <option {% if 'ROLE_STUDENT' in user.roles %} selected  {% endif %} value="ROLE_STUDENT">Uczeń</option>
+                                        <option {% if 'ROLE_TEACHER' in user.roles %} selected  {% endif %} value="ROLE_TEACHER">Nauczyciel</option>
+                                        <option {% if 'ROLE_ADMIN' in user.roles %} selected  {% endif %} value="ROLE_ADMIN">Administrator</option>
                                     </select>
                                 </div>
 
-                                <div class="form-group class_name_id">
+                                <div class="form-group className">
                                     <strong>Klasa:</strong>
-                                    <select type="text" name="class_name_id" id="class_name_id" class="form-control class_name_id">
-                                        <option @if ($user->class_name_id =='0') selected @endif value="0">Brak klasy</option>
-                                        @foreach ($classes as $class )
-                                            <option @if ($user->class_name_id == $class->id) selected @endif value="{{$class->id}}">{{$class->name}}</option>
-                                        @endforeach
-
-                                        @error('class_name_id')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                    <select type="text" name="className" id="className" class="form-control className">
+                                         <option {% if (user.className =='0') %} selected  {% endif %} value="0">Brak klasy</option>
+                                        {% for class in classes %}
+                                            <option {% if (user.className == class) %}  selected{% endif %} value="{{class.id}}">{{class.name}}</option>
+                                        {% endfor %}                          
                                     </select>
 
                                 </div>
@@ -152,5 +144,5 @@
                 </div>
             </div>
         </div>
-        @endforeach #}
+        {% endfor %}
     {% endblock %}

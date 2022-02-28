@@ -46,7 +46,7 @@
 
                 {% if app.user %}
                     <div class="mb-3">
-                        Jesteś zalogowany jako: {{ app.user.username }}, <a href="{{ path('app_logout') }}">Wyloguj</a>
+                        Jesteś zalogowany jako: {{ app.user.name }}  {{ app.user.surname }}, <a href="{{ path('app_logout') }}">Wyloguj</a>
                     </div>
                 {% endif %}
                 <!-- Nested Row within Card Body -->
