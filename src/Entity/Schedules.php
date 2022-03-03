@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\SchedulesRepository;
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\SchedulesRepository;
 
 #[ORM\Entity(repositoryClass: SchedulesRepository::class)]
 class Schedules
@@ -18,13 +19,13 @@ class Schedules
     private $class_name_subject;
 
     #[ORM\Column(type: 'integer')]
-    private $weekday;
+    public $weekday;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $start_time;
+    public $start_time;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $end_time;
+    public $end_time;
 
     public function getId(): ?int
     {
@@ -42,6 +43,14 @@ class Schedules
 
         return $this;
     }
+
+    const WEEK_DAYS = [
+        '1' => 'Poniedziałek',
+        '2' => 'Wtorek',
+        '3' => 'Środa',
+        '4' => 'Czawartek',
+        '5' => 'Piatek',
+    ];
 
     public function getWeekday(): ?string
     {
@@ -97,5 +106,11 @@ class Schedules
     public function __toString()
     {
         return $this->weekday;
+    }
+
+
+    public function getDifference()
+    {
+        return Carbon::parse($this->end_time)->diffInMinutes($this->start_time);
     }
 }

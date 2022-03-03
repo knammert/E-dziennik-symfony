@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Schedules;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @method Schedules|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,9 +15,50 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SchedulesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, Security $security)
     {
         parent::__construct($registry, Schedules::class);
+        $this->security = $security;
+    }
+    public function calendarByRoleOrClassId()
+    {
+        if ($this->security->isGranted('ROLE_STUDENT')) {
+            
+            $qb = $this->createQueryBuilder('s')
+            ->join("s.class_name_subject", "c")
+            ->where('c.class_name = :ClassNameId')
+            ->setParameter('ClassNameId',$this->security->getUser()->getClassName()->getId());
+        }
+
+        if ($this->security->isGranted('ROLE_TEACHER')) {
+            
+            $qb = $this->createQueryBuilder('s')
+            ->join("s.class_name_subject", "c")
+            ->where('c.user = :user_id')
+            ->setParameter('user_id',$this->security->getUser()->getId());
+        }
+    
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            
+            $qb = $this->createQueryBuilder('s')
+            ->join("s.class_name_subject", "c")
+            ->where('c.class_name = :ClassNameId')
+            ->setParameter('ClassNameId',$this->security->getUser()->getClassName()->getId());
+        }
+        
+
+
+
+        $query = $qb->getQuery();
+        return $query->getResult();
+        
+
+
+        // $query->join('class_name_subjects', 'schedules.class_name_subject_id', '=', 'class_name_subjects.id');
+        //         $query->where('user_id', auth()->user()->id);
+
+        // returns an array of arrays (i.e. a raw data set)
+     
     }
 
     // /**

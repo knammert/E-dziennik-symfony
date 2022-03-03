@@ -14,6 +14,7 @@
         "gedmo/doctrine-extensions": "^3.5",
         "knplabs/knp-paginator-bundle": "^5.8",
         "laminas/laminas-code": "4.5.0@dev",
+        "nesbot/carbon": "^2.57",
         "sensio/framework-extra-bundle": "^6.2",
         "stof/doctrine-extensions-bundle": "^1.7",
         "symfony/console": "6.0.*",
