@@ -13,9 +13,9 @@ use Symfony\Component\Security\Core\Security;
 class FilterActivitiesFormType extends AbstractType
 {
     public function __construct(Security $security)
-        {
-        $this->security = $security;
-        }
+    {
+    $this->security = $security;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

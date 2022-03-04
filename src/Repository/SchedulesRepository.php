@@ -20,7 +20,7 @@ class SchedulesRepository extends ServiceEntityRepository
         parent::__construct($registry, Schedules::class);
         $this->security = $security;
     }
-    public function calendarByRoleOrClassId()
+    public function calendarByRoleOrClassId($filterResults=null)
     {
         if ($this->security->isGranted('ROLE_STUDENT')) {
             
@@ -41,9 +41,17 @@ class SchedulesRepository extends ServiceEntityRepository
         if ($this->security->isGranted('ROLE_ADMIN')) {
             
             $qb = $this->createQueryBuilder('s')
-            ->join("s.class_name_subject", "c")
-            ->where('c.class_name = :ClassNameId')
-            ->setParameter('ClassNameId',$this->security->getUser()->getClassName()->getId());
+            ->join("s.class_name_subject", "c");
+
+            if($filterResults!=null){
+                $qb->where('c.class_name = :ClassNameId')               
+                   ->setParameter('ClassNameId',$filterResults);
+            }
+            else{
+                //Do nto display anything
+                $qb->where('c.class_name = :ClassNameId')               
+                ->setParameter('ClassNameId',0);
+            }
         }
         
 

@@ -9,19 +9,16 @@
         {% if 'ROLE_ADMIN' in app.user.roles %}
             <div class="float-right row mb-2">
                 <!-- Wyszukiwarka użytkowników -->
-                <form class="form-inline" action="">
+                {{ form_start(formFilter) }}  
                     <div class="form-row">
                         <div class="col-auto">
-                            <select class='custom-select mr-sm-2' name="typeClassId" id="typeClassId" style='width:150px;'>
-                                {% for activitie in activities %} 
-                                    {# <option @if ( Request::get('typeClassId')  == $activitie->id) selected @endif value="{{$activitie->id}}"> Klasa: {{$activitie->name}}</option> #}
-                                    <option value="{{activitie.id}}"> Klasa: {{activitie.name}}</option> 
-                                {% endfor %}
-                            </select>
+                           {{ form_row(formFilter.id) }}
                         </div>
-                        <button class="btn btn-primary mr-3" type="sumbit">Wyszukaj</button>
+                        <div class="col-auto">
+                            <button class="btn btn-primary mr-3" type="sumbit">Wyszukaj</button>
+                        </div>
                     </div>
-                </form>
+                {{ form_end(formFilter) }}  
             </div>
         {% endif %}
 

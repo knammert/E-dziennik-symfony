@@ -18,11 +18,11 @@ class CalendarService
         $this->em = $em;
     }
 
-    public function generateCalendarData($weekDays)
+    public function generateCalendarData($weekDays, $filterResults=null)
     {
         $calendarData = [];
         $timeRange = (new TimeService)->generateTimeRange($this->params->get('app.calendar.start_time'), $this->params->get('app.calendar.end_time'));
-        $lessons   = $this->schedulesRepository->calendarByRoleOrClassId();
+        $lessons   = $this->schedulesRepository->calendarByRoleOrClassId($filterResults);
         $i = 0;
        // dd($lessons);
         foreach ($timeRange as $time)
