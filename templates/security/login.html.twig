@@ -44,11 +44,7 @@
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
 
-                {% if app.user %}
-                    <div class="mb-3">
-                        Jesteś zalogowany jako: {{ app.user.name }}  {{ app.user.surname }}, <a href="{{ path('app_logout') }}">Wyloguj</a>
-                    </div>
-                {% endif %}
+
                 <!-- Nested Row within Card Body -->
                 <div class="row">
                     <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>

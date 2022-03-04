@@ -92,25 +92,22 @@
         <li class="nav-item dropdown no-arrow">
             <a  class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                     {# @if (Auth::user()->avatar)
-                        <img src="{{asset('storage/'.Auth::user()->avatar)}}" alt="avatar" class="rounded-circle img-fluid" style="width: 40px;">
-                    @else
+                     {% if app.user.avatar %}
+                        <img src="{{app.user.avatar}}" alt="avatar" class="rounded-circle img-fluid" style="width: 40px;">
+                    {% else %}
                         <img class="user-avatar" style="width: 40px;" src="https://st.depositphotos.com/2101611/3925/v/600/depositphotos_39258143-stock-illustration-businessman-avatar-profile-picture.jpg" class="rounded-circle img-fluid" style="width: 150px;" alt="...">
-                    @endif #}
+                    {% endif %}
                 <span class="ml-3 d-none d-lg-inline text-gray-600 medium">{{ app.user.name}} {{ app.user.surname }}</span>
 
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{{ path('me') }}">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profil
                 </a>
-
-                        <a class="dropdown-item" href="{{ app.user ? 'logout': 'login' }}"
-                        <a class="dropdown-item" href="{{ app.user ? 'logout': 'login' }}">
-                       
+                        <a class="dropdown-item" href="{{ path('app_logout') }}">        
                          <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                             {{ app.user ? 'Wyloguj': 'Login'}}
                         </a>               
