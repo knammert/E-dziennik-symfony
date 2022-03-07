@@ -18,7 +18,7 @@ class RegistrationController extends AbstractController
     {
 
         if ($this->getUser()) {
-            return $this->redirectToRoute('calendar');
+            return $this->redirectToRoute('posts');
         }
 
         

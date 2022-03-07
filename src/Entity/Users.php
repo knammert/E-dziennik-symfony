@@ -58,12 +58,15 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     public $avatar;
 
-    
-  
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Posts::class)]
+    private $posts;
+
 
     public function __construct()
     {
         $this->grades = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
@@ -280,5 +283,35 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
         return 'uploads/documents';
+    }
+
+    /**
+     * @return Collection<int, Posts>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Posts $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Posts $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
