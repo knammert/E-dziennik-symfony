@@ -2,153 +2,140 @@
 
 {% block content%}
 
-<div class="float-left">
-    <h2>Użytkownicy</h2>
+	<div class="float-left">
+		<h2>Użytkownicy</h2>
 
-</div>
-<div class="float-right row mb-2 mr-2">
+	</div>
+	<div class="float-right row mb-2 mr-2">
 
-       {{ form_start(formFilter) }}
-        <div class="form-row">
-             <label class="my-1 mr-2" for="phrase">Szukaj użytkownika:</label>          
-        
-            <div class="col">
-                {# <input type="text" class="form-control" name="phrase" placeholder="" value="{{ phrase ?? '' }}"> #}
-                     {{ form_row(formFilter.phrase) }}
-            </div>
-            
-           
-            <div class="col-auto">
-             {{ form_row(formFilter.roles) }}
-                {# <select class='custom-select mr-sm-2' name="type" id="type">
-                       <option value="0"> Wszyscy</option>
-                        <option value="4"> Brak roli</option>
-                        <option value="1"> Uczeń</option>
-                        <option value="2"> Nauczyciel</option>
-                        <option value="3"> Administrator</option>
+		{{ form_start(formFilter) }}
+		<div class="form-row">
+			<label class="my-1 mr-2" for="phrase">Szukaj użytkownika:</label>
 
-                </select> #}
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-primary " type="sumbit">Wyszukaj</button>
-            </div>
-        </div>
-        {{ form_end(formFilter) }} 
-   
-</div>
+			<div class="col">
+				{{ form_row(formFilter.phrase) }}
+			</div>
+			<div class="col-auto">
+				{{ form_row(formFilter.roles) }}
+			</div>
+			<div class="col-auto">
+				<button class="btn btn-primary " type="sumbit">Wyszukaj</button>
+			</div>
+		</div>
+		{{ form_end(formFilter) }}
 
-        <table class="table shadow-lg p-3 mb-5 bg-white rounded" >
-            <thead class="thead-light">
-            <tr>
-                <th>Nr</th>
-                <th>Imie</th>
-                <th>Nazwisko</th>
-                <th>PESEL</th>
-                <th>Email</th>
-                <th>Rola</th>
-                <th>Klasa</th>
-                <th >Akcja</th>
-            </tr>
-        </thead>
-            <tbody class="">
-                {% for user in users %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.surname }}</td>
-                    <td>{{ user.pesel }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>
+	</div>
 
-                    {% if 'ROLE_STUDENT' in user.roles %}
-                        Uczeń     
-                   {% elseif 'ROLE_TEACHER' in user.roles %}
-                        Nauczyciel                
-                   {% elseif 'ROLE_ADMIN' in user.roles %}
-                        Administrator systemu                
-                    {% else %}
-                        Brak roli                               
-                    {% endif %}  
-                    </td>
-                    <td>
-                    {% if user.className != null %}
-                        {{user.className.name}}
-                    {% else %}
-                        Brak przypisanej
-                    {% endif %}  
+	<table class="table shadow-lg p-3 mb-5 bg-white rounded">
+		<thead class="thead-light">
+			<tr>
+				<th>Nr</th>
+				<th>Imie</th>
+				<th>Nazwisko</th>
+				<th>PESEL</th>
+				<th>Email</th>
+				<th>Rola</th>
+				<th>Klasa</th>
+				<th>Akcja</th>
+			</tr>
+		</thead>
+		<tbody class="">
+			{% for user in users %}
+				<tr>
+					<td>{{ loop.index }}</td>
+					<td>{{ user.name }}</td>
+					<td>{{ user.surname }}</td>
+					<td>{{ user.pesel }}</td>
+					<td>{{ user.email }}</td>
+					<td>
 
-                    </td>
-                    <td class="row">
-                    
-                        <a
-                        type="submit"
-                        class="btn btn-warning mr-1 editModal"
-                        data-toggle="modal"
-                        data-target="#editUserModal-{{user.id}}">
-                        Edytuj
-                        </a>
-                        <a 
-                        href="/adminPanel/users/index/delete/{{user.id}}"
-                        class="btn btn-danger">
-                        Usuń użytkownika
-                         </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+						{% if 'ROLE_STUDENT' in user.roles %}
+							Uczeń
+						{% elseif 'ROLE_TEACHER' in user.roles %}
+							Nauczyciel
+						{% elseif 'ROLE_ADMIN' in user.roles %}
+							Administrator systemu
+						{% else %}
+							Brak roli
+						{% endif %}
+					</td>
+					<td>
+						{% if user.className != null %}
+							{{user.className.name}}
+						{% else %}
+							Brak przypisanej
+						{% endif %}
+					</td>
+					<td class="row">
 
-        <div class="d-flex justify-content-center">
-            {!! $users->links() !!}
-        </div>
-        {# {{-- Modal --}} #}
-        {% for user in users %}
-        <div class="modal fade" id="editUserModal-{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="editUserModal" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editUserModal">Edycja użytkownika</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                            <div class="modal-body">
-                                <p>Imię: {{user.name}}</p>
-                                <p>Nazwisko: {{user.surname}}</p>
-                                <p>Email: {{user.email}}</p>
-                                <p>PESEL: {{user.pesel}}</p>
-                                {# <p>Data rejestracji: {{user.created_at}}</p>
-                                <p>Ostatnio modyfikowany: {{user.updated_at}}</p> #}
-                                <form action="{{ path('user_update', { 'userId' : user.id }) }}" method="POST">
-                                <div class="form-group">
-                                    <strong>Rola:</strong>
-                            
-                                    <select type="text" name="role" id="role" class="form-control role">
-                                        <option value="">Brak roli</option>
-                                        <option {% if 'ROLE_STUDENT' in user.roles %} selected  {% endif %} value="ROLE_STUDENT">Uczeń</option>
-                                        <option {% if 'ROLE_TEACHER' in user.roles %} selected  {% endif %} value="ROLE_TEACHER">Nauczyciel</option>
-                                        <option {% if 'ROLE_ADMIN' in user.roles %} selected  {% endif %} value="ROLE_ADMIN">Administrator</option>
-                                    </select>
-                                </div>
+						<a type="submit" class="btn btn-warning mr-1 editModal" data-toggle="modal" data-target="#editUserModal-{{user.id}}">
+							Edytuj
+						</a>
+						<a href="/adminPanel/users/index/delete/{{user.id}}" class="btn btn-danger">
+							Usuń użytkownika
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 
-                                <div class="form-group className">
-                                    <strong>Klasa:</strong>
-                                    <select type="text" name="className" id="className" class="form-control className">
-                                         <option {% if (user.className =='0') %} selected  {% endif %} value="">Brak klasy</option>
-                                        {% for class in classes %}
-                                            <option {% if (user.className == class) %}  selected{% endif %} value="{{class.id}}">{{class.name}}</option>
-                                        {% endfor %}                          
-                                    </select>
+	<div class="d-flex justify-content-center">
+		{!! $users->links() !!}
+	</div>
+	{# {{-- Modal --}} #}
+	{% for user in users %}
+		<div class="modal fade" id="editUserModal-{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="editUserModal" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="editUserModal">Edycja użytkownika</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p>Imię:
+							{{user.name}}</p>
+						<p>Nazwisko:
+							{{user.surname}}</p>
+						<p>Email:
+							{{user.email}}</p>
+						<p>PESEL:
+							{{user.pesel}}</p>
+						<p>Data rejestracji:
+							{{ user.createdAt | date("d/m/Y H:i") }}</p>
+						<p>Ostatnio modyfikowany:
+							{{ user.createdAt | date("d/m/Y H:i") }}</p>
+						<form action="{{ path('user_update', { 'userId' : user.id }) }}" method="POST">
+							<div class="form-group">
+								<strong>Rola:</strong>
+								<select type="text" name="role" id="role" class="form-control role">
+									<option value="">Brak roli</option>
+									<option {% if 'ROLE_STUDENT' in user.roles %} selected {% endif %} value="ROLE_STUDENT">Uczeń</option>
+									<option {% if 'ROLE_TEACHER' in user.roles %} selected {% endif %} value="ROLE_TEACHER">Nauczyciel</option>
+									<option {% if 'ROLE_ADMIN' in user.roles %} selected {% endif %} value="ROLE_ADMIN">Administrator</option>
+								</select>
+							</div>
 
-                                </div>
-                            </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
-                                    <button type="submit" class="btn btn-primary">Zatwierdź</button>
-                                </form>
-                         </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    {% endblock %}
+							<div class="form-group className">
+								<strong>Klasa:</strong>
+								<select type="text" name="className" id="className" class="form-control className">
+									<option {% if (user.className =='0') %} selected {% endif %} value="">Brak klasy</option>
+									{% for class in classes %}
+										<option {% if (user.className == class) %} selected {% endif %} value="{{class.id}}">{{class.name}}</option>
+									{% endfor %}
+								</select>
+
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+							<button type="submit" class="btn btn-primary">Zatwierdź</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}

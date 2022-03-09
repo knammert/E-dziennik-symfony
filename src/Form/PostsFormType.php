@@ -16,40 +16,34 @@ class PostsFormType extends AbstractType
 {
     public function __construct(Security $security)
     {
-    $this->security = $security;
+        $this->security = $security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('title',TextType::class ,[
-            'label' => 'Tytuł',
-            'attr' => [                
-                'class' => 'form-control ',               
-            ],
-        ])
-        ->add('description',TextareaType::class ,[
-            'label' => 'Treść',
-            'attr' => [                
-                'class' => 'form-control ',               
-            ],
-        ])
-        ->add('image_path',FileType::class ,[
-            'data_class' => null,
-            'required' =>true,
-            'label' => 'Zdjęcie',
-            'attr' => [                
-                'class' => 'form-control-file',               
-            ],
-        ])
-        // ->add('user_id', HiddenType::class, [
-        //     'data' => $this->security->getUser()
-        // ]);
-       ;
+            ->add('title', TextType::class, [
+                'label' => 'Tytuł',
+                'attr' => [
+                    'class' => 'form-control ',
+                ],
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Treść',
+                'attr' => [
+                    'class' => 'form-control ',
+                ],
+            ])
+            ->add('image_path', FileType::class, [
+                'data_class' => null,
+                'required' => true,
+                'label' => 'Zdjęcie',
+                'attr' => [
+                    'class' => 'form-control-file',
+                ],
 
-           // ->add('image_path')
-            
-        
+
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

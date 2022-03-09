@@ -36,13 +36,11 @@ class PostsController extends AbstractController
         ]);
     }
     
-
     #[Route('/posts/index/{id}',  methods:['GET'], name: 'post_show')]
     public function show($id,PaginatorInterface $paginator,Request $request): Response
     {
         $post = $this->postsRepository->find($id);
     
-
         return $this->render('posts/show.html.twig', [
             'post' => $post
                 
