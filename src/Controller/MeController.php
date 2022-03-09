@@ -98,4 +98,22 @@ class MeController extends AbstractController
             'form' => $form->createView(),      
         ]);
     }
+
+    #[Route('/me/deleteAccountSite',methods:['GET'], name: 'me_delete_account_site')]
+    public function showDeleteAccountSite(): Response
+    {
+         return $this->render('me/deleteAccount.html.twig', [         
+        ]);
+    }
+
+    #[Route('/me/deleteAccount', name: 'me_delete_account')]
+    public function delete(): Response
+    {  
+        $user = $this->security->getUser();
+        $user->setRoles([]);
+        $this->em->flush();
+
+        return $this->redirectToRoute('app_logout');
+    }
+
 }

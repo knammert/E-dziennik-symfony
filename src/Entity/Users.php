@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -27,11 +26,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private $roles = [];
     
-    /**
-     * @SecurityAssert\UserPassword(
-     *     message = "Podane hasło nie zgadza sie z ustalonym hasłem"
-     * )
-     */
+    
     #[ORM\Column(type: 'string')]
     private $password;
 
@@ -50,15 +45,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(targetEntity: ClassNames::class, inversedBy: 'users')]
     private $class_name;
 
-    #[Gedmo\Timestampable(on: 'create')]
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $created_at;
 
-    #[Gedmo\Timestampable(on: 'update')]
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $updated_at;
-
-
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     public $avatar;
