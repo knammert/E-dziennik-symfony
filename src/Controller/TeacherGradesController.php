@@ -50,6 +50,9 @@ class TeacherGradesController extends AbstractController
             $classNameSubject = $this->classNameSubjectsRepository->findOneBy([
                 'user' => $this->security->getUser()->getId()
             ]);
+            if(!$classNameSubject){
+                return $this->redirectToRoute('posts');
+            }
             $classId = $classNameSubject->getClassName()->getId();
 
             $users = $this->usersRepository->findBy([

@@ -16,6 +16,10 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
+        $securityContext = $this->container->get('security.authorization_checker');
+        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')){
+            return $this->redirectToRoute('posts');
+        }
 
         if ($this->getUser()) {
             return $this->redirectToRoute('posts');
