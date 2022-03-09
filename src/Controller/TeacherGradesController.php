@@ -103,9 +103,7 @@ class TeacherGradesController extends AbstractController
 
 
     #[Route('/changeStudentList/{id}',methods:['GET','POST'], name: 'changeStudentList')]
-    public function changeStudentList($id){
-        
-        
+    public function changeStudentList($id){    
          $classNameSubjects = $this->classNameSubjectsRepository->find($id);
          $classId = $classNameSubjects->getClassName()->getId();
 
