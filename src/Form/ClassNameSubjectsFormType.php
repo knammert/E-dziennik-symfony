@@ -6,6 +6,7 @@ use App\Entity\Users;
 use App\Entity\Subjects;
 use App\Entity\ClassNames;
 use App\Entity\ClassNameSubjects;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -35,6 +36,10 @@ class ClassNameSubjectsFormType extends AbstractType
              ])
              ->add('user', EntityType::class,[
                 'class' => Users::class,
+                'query_builder' => function (EntityRepository $er ) {                       
+                    return $er->createQueryBuilder('u')-> where('u.roles LIKE :roles')
+                    ->setParameter('roles', '%ROLE_TEACHER%');
+                },
                 'choice_label' => function (Users $user) {
                     return $user->getName() . ' ' . $user->getSurname();
                 },

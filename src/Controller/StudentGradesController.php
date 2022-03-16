@@ -27,6 +27,9 @@ class StudentGradesController extends AbstractController
     public function index(PaginatorInterface $paginator,Request $request): Response
     {
         //Retriving activities
+        if($this->security->getUser()->getClassName() == null){
+            return $this->redirectToRoute('posts');
+        }
         $classNameSubjects = $this->classNameSubjectsRepository->findBy([
             'class_name' => $this->security->getUser()->getClassName()->getId()
         ]);

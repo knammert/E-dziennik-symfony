@@ -23,7 +23,7 @@
 				</div>
 			{% endif %}
 
-			<table class="table shadow-lg p-3 mb-5 bg-white" style='border-collapse: separate;'>
+			<table class="table shadow-lg p-3 mb-5 bg-white table-sm" style='border-collapse: separate;'>
 
 				<thead class='thead-light'>
 					<th width="125">Czas</th>
@@ -34,14 +34,13 @@
 				<tbody>
 					{% for time,days in calendarData%}
 						<tr>
-							<td class="table-light">
+							<td  style=" height: 80px ;" class="table-light">
 								<b>
 									{{ time }}</b>
-
 								{% for value in days %}
 									{% if value is iterable  %}
-
-										<td rowspan="{{ value.rowspan}}" class="align-middle text-center text-white  " style="border-radius: 20px; 40px; background-color:{{value.color}}; opacity:0.8;">
+										<td rowspan="{{ value.rowspan}}" class="align-middle text-center text-white mb-1" 
+										style="height: 100px ;border-radius: 10px 30px; background-color:{{value.color}}; opacity:0.75;">										
 											Przedmiot:
 											{{ value['subject_name'] }}<br>
 											{% if 'ROLE_STUDENT' in app.user.roles %}
@@ -51,16 +50,17 @@
 											{% elseif 'ROLE_TEACHER' in app.user.roles %}
 												Klasa:
 												{{ value.class_name}}
-											{% elseif 'ROLE_ADMIN' in app.user.roles %}
+											{% elseif 'ROLE_ADMIN' in app.user.roles %}										
 												Nauczyciel:
 												{{ value.teacher_name}}
 												{{value.teacher_surname }}
 												Klasa:
 												{{ value.class_name}}<br>
+											
 											{% endif %}
 										</td>
 									{% elseif (value is same as(1)) %}
-										<td></td>
+										<td ></td>
 									{% endif %}
 								{% endfor %}
 							</td>
@@ -69,4 +69,4 @@
 				</tbody>
 			</table>
 
-{% endblock %}
+		{% endblock %}

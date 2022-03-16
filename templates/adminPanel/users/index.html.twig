@@ -81,7 +81,7 @@
 	</table>
 
 	<div class="d-flex justify-content-center">
-		{!! $users->links() !!}
+		{{ knp_pagination_render(users) }}
 	</div>
 	{# {{-- Modal --}} #}
 	{% for user in users %}

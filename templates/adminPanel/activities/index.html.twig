@@ -27,12 +27,10 @@
 			<th>Nazwa przedmiotu</th>
 			<th>Przypisany nauczyciel</th>
 			<th>Kalendarz</th>
-
 			<th width="280px">Akcja</th>
 		</tr>
 
 		{% for class_name_subject in class_name_subjects %}
-
 			<tr>
 				<td>{{ loop.index }}</td>
 				<td>{{ class_name_subject.getClassName().getName()}}
@@ -48,7 +46,11 @@
 						{{ schedule.getEndTime() }}<br>
 					{% endfor %}
 				</td>
-				<td></td>
+				<td>			
+					<a href="/adminPanel/activities/delete/{{class_name_subject.id }}" class="btn btn-danger">
+						Usuń zajęcia
+					</a>
+				</td>
 			</tr>
 		{% endfor %}
 	</table>

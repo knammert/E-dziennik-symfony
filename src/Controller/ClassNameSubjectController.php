@@ -62,4 +62,16 @@ class ClassNameSubjectController extends AbstractController
              'formSchedule'=>$formSchedule->createView()
         ]);
     }
+
+    #[Route('/adminPanel/activities/delete/{id}',methods:['GET','DELETE'], name: 'activities_delete')]
+    public function delete($id): Response
+    {
+        
+        $classNameSubject = $this->classNameSubjectsRepository->find($id);
+    
+        $this->em->remove($classNameSubject);
+        $this->em->flush();
+
+        return $this->redirectToRoute('activities');
+    }
 }
