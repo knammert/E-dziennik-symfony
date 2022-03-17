@@ -38,6 +38,7 @@ class ClassNamesController extends AbstractController
                 $newClassName = $form->getData();
                 $this->em->persist($newClassName);
                 $this->em->flush();
+                $this->addFlash('status', 'Pomyślnie dodano nową klasę');
                 return $this->redirectToRoute('classNames');
             }
         // Create new class END
@@ -58,6 +59,7 @@ class ClassNamesController extends AbstractController
         $className = $this->classNamesRepository->find($id);
         $this->em->remove($className);
         $this->em->flush();
+        $this->addFlash('status', 'Pomyślnie usunięto klasę');
 
         return $this->redirectToRoute('classNames');
     }

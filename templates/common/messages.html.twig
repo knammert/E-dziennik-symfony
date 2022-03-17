@@ -1,5 +1,20 @@
-{# @if (session('status'))
-    <div class="alert alert-success alert-dismissible fade show my-3" role="alert">
-        <strong>{{ session('status') }}</strong>
-    </div>
-@endif #}
+{% for message in app.flashes('status') %}
+	<div style="
+		        margin-left: auto;
+		        margin-right: auto;
+		        left: 0;
+		        right: 0; position: absolute; text-align: center;
+		        z-index: 100; " class=" col-4 alert alert-success alert-dismissible fade show  text-center" id='flashMesseage' role="alert">
+		<strong>
+			{{ message }}
+		</strong>
+	</div>
+{% endfor %}
+
+<script>
+	$(function () {
+        $('#flashMesseage').delay(500).fadeIn('normal', function () {
+            $(this).delay(2500).fadeOut();
+        });
+    });
+</script>

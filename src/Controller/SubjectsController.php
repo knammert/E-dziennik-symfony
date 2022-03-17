@@ -32,13 +32,14 @@ class SubjectsController extends AbstractController
         $repository = $this->em->getRepository(Subjects::class);
 
         // Create new subject
-        $subject = new Subjects();
-        $form = $this->createForm(SubjectFormType::class, $subject);
-        $form->handleRequest($request);
+         $subject = new Subjects();
+         $form = $this->createForm(SubjectFormType::class, $subject);
+         $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){ 
                 $newSubject = $form->getData();
                 $this->em->persist($newSubject);
                 $this->em->flush();
+                $this->addFlash('status', 'Pomyślnie dodano nowy przedmiot');
                 return $this->redirectToRoute('subjects');
             }
         // Create new subject END
@@ -56,7 +57,7 @@ class SubjectsController extends AbstractController
         $subject = $this->subjectsRepository->find($id);
         $this->em->remove($subject);
         $this->em->flush();
-
+        $this->addFlash('status', 'Przedmiot zostal usunięty');
         return $this->redirectToRoute('subjects');
     }
 

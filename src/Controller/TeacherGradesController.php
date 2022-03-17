@@ -74,6 +74,7 @@ class TeacherGradesController extends AbstractController
             $newGrade = $form->getData();
             $this->em->persist($newGrade);
             $this->em->flush();
+            $this->addFlash('status', 'Pomyślnie dodano nową ocenę');
             return $this->redirect($request->headers->get('referer'));
         }
         //END new grade
@@ -103,6 +104,7 @@ class TeacherGradesController extends AbstractController
         $grade->setWeight($request->get('weight'));
         $grade->setSemestr($request->get('semestr'));
         $grade->setComment($request->get('comment'));
+        $this->addFlash('status', 'ocena została zaaktualizowana');
         $this->em->flush();
 
         return $this->redirect($request->headers->get('referer'));

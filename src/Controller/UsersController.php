@@ -67,6 +67,7 @@ class UsersController extends AbstractController
          $user->setClassName($class);
          $user->setRoles([$request->get('role')]);
          $this->em->flush();
+         $this->addFlash('status', 'Użytkownik został zaakutalizowany');
         
          return $this->redirect($request->headers->get('referer'));
     }
@@ -78,6 +79,7 @@ class UsersController extends AbstractController
         $user = $this->usersRepository->find($id);
         $this->em->remove($user);
         $this->em->flush();
+        $this->addFlash('status', 'Uzytkownik został usunięty');
 
         return $this->redirectToRoute('users');
     }

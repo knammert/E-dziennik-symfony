@@ -23,8 +23,7 @@ class PostsController extends AbstractController
         $this->security = $security;
     }
 
-
-    #[Route('/posts/index', name: 'posts')]
+    #[Route('/dashboard', name: 'posts')]
     public function index(PaginatorInterface $paginator,Request $request): Response
     {
         $posts = $this->em->getRepository(Posts::class);
@@ -75,6 +74,7 @@ class PostsController extends AbstractController
                 $post->setUser($this->security->getUser());
                 $this->em->persist($newPost);
                 $this->em->flush();
+                $this->addFlash('status', 'Pomyślnie dodano nowy post');
                 return $this->redirectToRoute('posts');
             }
         
@@ -97,7 +97,7 @@ class PostsController extends AbstractController
         }
          $this->em->remove($post);
          $this->em->flush();
-
+         $this->addFlash('status', 'Twoj post został usunięty');
         return $this->redirectToRoute('posts');
     }
 }

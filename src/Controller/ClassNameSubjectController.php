@@ -39,6 +39,7 @@ class ClassNameSubjectController extends AbstractController
                 $newActivity = $form->getData();
                 $this->em->persist($newActivity);
                 $this->em->flush();
+                $this->addFlash('status', 'Pomyślnie dodano nowe zajęcia');
                 return $this->redirectToRoute('activities');
             }
         // Create new activity END
@@ -51,6 +52,7 @@ class ClassNameSubjectController extends AbstractController
                  $newSchedule = $formSchedule->getData();
                  $this->em->persist($newSchedule);
                  $this->em->flush();
+                 $this->addFlash('status', 'Pomyślnie zaktaulizowano plan zajęć');
                  return $this->redirectToRoute('activities');
              }
          // Create new schedule END
@@ -71,7 +73,7 @@ class ClassNameSubjectController extends AbstractController
     
         $this->em->remove($classNameSubject);
         $this->em->flush();
-
+        $this->addFlash('status', 'Pomyślnie usunięto zajęcia');
         return $this->redirectToRoute('activities');
     }
 }

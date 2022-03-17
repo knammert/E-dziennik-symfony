@@ -32,10 +32,9 @@
 					</article>
 					<div class="row ml-1">
 						<div>
-							<a class="btn btn-primary" href="/posts/index/">Powrót</a>
+							<a class="btn btn-primary" href="/dashboard">Powrót</a>
 						</div>
 						{% if (app.user==post.user) %}
-
 							<div class="ml-1">
 								<a href="/posts/delete/{{post.id }}" class="btn btn-danger">
 									Usuń post

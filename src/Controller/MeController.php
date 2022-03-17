@@ -63,6 +63,7 @@ class MeController extends AbstractController
                 $me->setSurname($form->get('surname')->getData());
                        
                 $this->em->flush();
+                $this->addFlash('status', 'Profil został zaaktualizowany');
                 return $this->redirectToRoute('me');
             }
 
@@ -89,7 +90,7 @@ class MeController extends AbstractController
         
                 //     $this->em->persist($me);
                 //     $this->em->flush();
-              
+                $this->addFlash('status', 'Pomyślnie zmieniono hasło');
                 // return $this->redirectToRoute('app_logout'); 
                
             }
@@ -112,7 +113,7 @@ class MeController extends AbstractController
         $user = $this->security->getUser();
         $user->setRoles([]);
         $this->em->flush();
-
+        $this->addFlash('status', 'Twoje konto zostało deaktywowane');
         return $this->redirectToRoute('app_logout');
     }
 
