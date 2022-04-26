@@ -36,6 +36,8 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
         $this->_em->flush();
     }
 
+    
+
     public function findUsersAvg($classId,$ClassNameSubjectId)
     {
         //dd($classId,$ClassNameSubjectId);

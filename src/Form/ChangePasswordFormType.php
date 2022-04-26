@@ -19,25 +19,24 @@ class ChangePasswordFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder                
-            ->add('password',PasswordType::class ,[
-               // 'mapped' => true,
+            ->add('password', PasswordType::class ,[
                 'label' => false,
+                'mapped' => false,
                 'attr' => [                
                     'class' => 'form-control ',          
-                    'placeholder' => 'Stare hasło',                
+                    'placeholder' => 'Aktualne hasło',                
                 ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => false ,'attr' => ['placeholder' => 'Hasło']],
-                'second_options' => ['label' => false, 'attr' => ['placeholder' => 'Powtórz hasło']],
+                'first_options' => ['label' => false ,'attr' => ['placeholder' => 'Nowe hasło']],
+                'second_options' => ['label' => false, 'attr' => ['placeholder' => 'Powtórz nowe hasło']],
                 'label' => false,
                 'invalid_message' => 'Podane hasła nie zgadzają się',
                 'attr' => [
                     'autocomplete' => 'plainPassword',                     
                     'class' => 'form-control',
-                    'placeholder' => 'Haslo',
-                    'autocomplete' => 'new-password'],
+                    'placeholder' => 'Nowe hasło',],
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank([
@@ -56,8 +55,8 @@ class ChangePasswordFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => Users::class,
-        ]);
+        // $resolver->setDefaults([
+        //     'data_class' => Users::class,
+        // ]);
     }
 }

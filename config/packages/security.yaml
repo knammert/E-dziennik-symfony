@@ -41,10 +41,13 @@ security:
     access_control:
 
             - { path: ^/calendar, roles: [ROLE_ADMIN, ROLE_TEACHER,ROLE_STUDENT] }
+            - { path: ^/dashboard, roles: [ROLE_ADMIN, ROLE_TEACHER,ROLE_STUDENT]  }
+            - { path: ^/me/, roles: [ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT]  }
             - { path: ^/studentPanel, roles: [ROLE_STUDENT] }
             - { path: ^/teacherPanel, roles: [ROLE_TEACHER] }
             - { path: ^/posts/create, roles: [ROLE_ADMIN, ROLE_TEACHER] }
             - { path: ^/adminPanel, roles: [ROLE_ADMIN] }
+
             # debug
             # - { path: ^/calendar, roles: [ROLE_ADMIN, ROLE_TEACHER,ROLE_STUDENT] }
             # - { path: ^/studentPanel, roles: [ROLE_ADMIN, ROLE_TEACHER,ROLE_STUDENT] }

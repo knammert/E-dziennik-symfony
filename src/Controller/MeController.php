@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MeController extends AbstractController
@@ -80,18 +81,22 @@ class MeController extends AbstractController
         $form = $this->createForm(ChangePasswordFormType::class, $me );   
         $form->handleRequest($request);
             
-            if($form->isSubmitted() && $form->isValid()){     
-                // $me->setPassword(
-                //     $userPasswordHasher->hashPassword(
-                //             $me,
-                //             $form->get('plainPassword')->getData()
-                //         )
-                //     );
-        
-                //     $this->em->persist($me);
-                //     $this->em->flush();
+            if($form->isSubmitted() && $form->isValid()){      
+
+                $oldPassword = $form->get('password')->getData();         
+                if (!$userPasswordHasher->isPasswordValid($me, $oldPassword)) {
+                    $this->addFlash('status', 'Wprowadzone aktualne hasło jest niepoprwane');
+                    return $this->redirectToRoute('me_change_password'); 
+                }
+
+                $newHashedPassword = $userPasswordHasher->hashPassword(
+                    $me,
+                    $form->get('plainPassword')->getData()
+                );
+
+                $this->usersRepository->upgradePassword($me, $newHashedPassword);
                 $this->addFlash('status', 'Pomyślnie zmieniono hasło');
-                // return $this->redirectToRoute('app_logout'); 
+                return $this->redirectToRoute('app_logout'); 
                
             }
 
@@ -113,7 +118,7 @@ class MeController extends AbstractController
         $user = $this->security->getUser();
         $user->setRoles([]);
         $this->em->flush();
-        $this->addFlash('status', 'Twoje konto zostało deaktywowane');
+        $this->addFlash('status', 'Twoje konto zostało dezaktywowane');
         return $this->redirectToRoute('app_logout');
     }
 
