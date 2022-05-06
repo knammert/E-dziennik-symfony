@@ -30,29 +30,13 @@ class CalendarController extends AbstractController
         $formFilter->handleRequest($request);
             if($formFilter->isSubmitted() && $formFilter->isValid()){                
                 $filterResult = $formFilter->getData();  
-                $filterResult = $filterResult->id->id;
-            //   // dd($filterResult);   
-            //     $qb = $this->usersRepository->createQueryBuilder('u')
-            //     ->orderBy('u.surname', 'ASC');
-
-            //      if($filterResult['phrase'] !=null){
-            //         $qb -> where('u.surname LIKE :phrase')
-            //         ->setParameter('phrase', '%'.$filterResult['phrase'].'%');
-            //      }
-            //      if($filterResult['roles'] !=null){
-            //         $qb -> where('u.roles LIKE :roles')
-            //         ->setParameter('roles', '%'.$filterResult['roles'].'%');
-            //      }
-      
-            //     $query = $qb->getQuery();
-            //     $users = $query->execute();              
+                $filterResult = $filterResult->id->id;           
             $calendarData = $calendarService->generateCalendarData($weekDays, $filterResult);                 
             }
             else {
                 $calendarData = $calendarService->generateCalendarData($weekDays);
             }
       
-
         return $this->render('calendar/index.html.twig', [
             'weekDays' => $weekDays,
             'calendarData' =>  $calendarData,

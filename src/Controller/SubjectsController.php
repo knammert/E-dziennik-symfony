@@ -51,13 +51,13 @@ class SubjectsController extends AbstractController
         ]);
     }
 
-    #[Route('/adminPanel/subjects/delete/{id}',methods:['GET','DETLE'], name: 'subjects_delete')]
+    #[Route('/adminPanel/subjects/delete/{id}',methods:['GET','DELETE'], name: 'subjects_delete')]
     public function delete($id): Response
     {
         $subject = $this->subjectsRepository->find($id);
         $this->em->remove($subject);
         $this->em->flush();
-        $this->addFlash('status', 'Przedmiot zostal usunięty');
+        $this->addFlash('status', 'Przedmiot został usunięty');
         return $this->redirectToRoute('subjects');
     }
 

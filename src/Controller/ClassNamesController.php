@@ -26,8 +26,6 @@ class ClassNamesController extends AbstractController
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
         
-        // $repository = $this->em->getRepository(Subjects::class);
-        // $subjects = $repository->findAll();
         $repository = $this->em->getRepository(ClassNames::class);
 
         // Create new class

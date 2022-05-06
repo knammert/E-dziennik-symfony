@@ -23,12 +23,10 @@ class ClassNameSubjectController extends AbstractController
         $this->em = $em;     
     }
 
-
     #[Route('/adminPanel/activities/index', name: 'activities')]
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
-         // $repository = $this->em->getRepository(Subjects::class);
-        // $subjects = $repository->findAll();
+
         $repository = $this->em->getRepository(ClassNameSubjects::class);
 
         // Create new activity
@@ -42,8 +40,6 @@ class ClassNameSubjectController extends AbstractController
                 $this->addFlash('status', 'Pomyślnie dodano nowe zajęcia');
                 return $this->redirectToRoute('activities');
             }
-        // Create new activity END
-
          // Create new schedule
          $schedule = new Schedules();
          $formSchedule = $this->createForm(SchedulesFormType::class, $schedule);
@@ -55,8 +51,7 @@ class ClassNameSubjectController extends AbstractController
                  $this->addFlash('status', 'Pomyślnie zaktaulizowano plan zajęć');
                  return $this->redirectToRoute('activities');
              }
-         // Create new schedule END
-       
+
         return $this->render('/adminPanel/activities/index.html.twig',[
             'class_name_subjects' => $paginator->paginate(
                 $repository->findAll(),$request->query->getInt('page', 1),10),
@@ -67,10 +62,8 @@ class ClassNameSubjectController extends AbstractController
 
     #[Route('/adminPanel/activities/delete/{id}',methods:['GET','DELETE'], name: 'activities_delete')]
     public function delete($id): Response
-    {
-        
+    {     
         $classNameSubject = $this->classNameSubjectsRepository->find($id);
-    
         $this->em->remove($classNameSubject);
         $this->em->flush();
         $this->addFlash('status', 'Pomyślnie usunięto zajęcia');

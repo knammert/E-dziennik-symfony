@@ -6,14 +6,13 @@ use App\Form\EditMeFormType;
 use App\Repository\UsersRepository;
 use App\Form\ChangePasswordFormType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use App\Service\ProfilePictureUploadService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MeController extends AbstractController
@@ -33,7 +32,7 @@ class MeController extends AbstractController
     }
 
     #[Route('/me/edit', name: 'me_edit')]
-    public function edit(Request $request): Response
+    public function edit(Request $request, ProfilePictureUploadService $profilePictureUploadService): Response
     {
         $me = $this->security->getUser();
         $form = $this->createForm(EditMeFormType::class,$this->security->getUser());
@@ -41,28 +40,10 @@ class MeController extends AbstractController
         $form->handleRequest($request);
         $avatar = $form->get('avatar')->getData();
             if($form->isSubmitted() && $form->isValid()){     
-                //file upload
-                if ($avatar) {
-                    //detele old avatar
-                           
-                    //delete old avatr end
-
-                    $newFileName = uniqid() . '.' . $avatar->guessExtension();
-                    try {
-                        $avatar->move(
-                            $this->getParameter('kernel.project_dir') . '/public/uploads',
-                            $newFileName
-                        );
-                    } catch (FileException $e) {
-                        return new Response($e->getMessage());
-                    }
-
+                $newFileName = $profilePictureUploadService->uploadProfilePicture($avatar);
                 $me->setAvatar('/uploads/' . $newFileName);
-                }
-                // fiel uplaod END
                 $me->setName($form->get('name')->getData());
-                $me->setSurname($form->get('surname')->getData());
-                       
+                $me->setSurname($form->get('surname')->getData()); 
                 $this->em->flush();
                 $this->addFlash('status', 'Profil został zaaktualizowany');
                 return $this->redirectToRoute('me');
