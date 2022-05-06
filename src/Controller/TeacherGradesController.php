@@ -33,7 +33,8 @@ class TeacherGradesController extends AbstractController
     #[Route('/teacherPanel/index/', name: 'teacher_grades')]
     public function index(PaginatorInterface $paginator, Request $request): Response
     {
-        ob_start();
+         $this->denyAccessUnlessGranted('ROLE_TEACHER');
+
         // Create filter form      
         $formFilter = $this->createForm(FilterActivitiesFormType::class);
         $formFilter->handleRequest($request);
@@ -41,7 +42,6 @@ class TeacherGradesController extends AbstractController
             $filterResult = $formFilter->getData();
             $classNameSubject = $this->classNameSubjectsRepository->find($filterResult->id);
             $classId = $classNameSubject->getClassName()->getId();
-
             $users = $this->usersRepository->findBy([
                 'class_name' => $classId,
 
